@@ -1,0 +1,49 @@
+# The advisor database as qone-infra composes it (Annex G): its own PostgreSQL instance with a
+# fixed image version, a volume and a health check, plus the Flyway runner behind the tooling
+# profile:  docker compose --env-file .env --profile tooling run --rm advisor-db-migrate
+services:
+  advisor-db:
+    image: postgres:16.4-alpine
+    container_name: advisor-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${ADVISOR_DB_NAME:-advisor}
+      POSTGRES_USER: ${ADVISOR_DB_USER:-advisor}
+      POSTGRES_PASSWORD: ${ADVISOR_DB_PASSWORD:?ADVISOR_DB_PASSWORD is required}
+    expose:
+      - "5432"
+    volumes:
+      - advisor-db-data:/var/lib/postgresql/data
+    networks:
+      - platform
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ADVISOR_DB_USER:-advisor} -d ${ADVISOR_DB_NAME:-advisor}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  advisor-db-migrate:
+    image: flyway/flyway:10.22.0
+    container_name: advisor-db-migrate
+    profiles: ["tooling"]
+    depends_on:
+      advisor-db:
+        condition: service_healthy
+    environment:
+      FLYWAY_URL: jdbc:postgresql://advisor-db:5432/${ADVISOR_DB_NAME:-advisor}
+      FLYWAY_USER: ${ADVISOR_DB_USER:-advisor}
+      FLYWAY_PASSWORD: ${ADVISOR_DB_PASSWORD:?ADVISOR_DB_PASSWORD is required}
+    volumes:
+      - ../migrations:/workspace/migrations:ro
+      - ../flyway.toml:/workspace/flyway.toml:ro
+    entrypoint: ["flyway", "-workingDirectory=/workspace", "-configFiles=/workspace/flyway.toml"]
+    command: ["migrate"]
+    networks:
+      - platform
+
+volumes:
+  advisor-db-data:
+
+networks:
+  platform:
+    external: true
