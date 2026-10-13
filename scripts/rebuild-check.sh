@@ -52,6 +52,8 @@ migrate validate
 
 echo "== 6. the seeds are idempotent"
 for f in migrations/02_dml/V*.sql; do [ -f "$f" ] || continue; psql_db < "$f" >/dev/null; psql_db < "$f" >/dev/null; done
+counts=$(psql_db -tA -c "SELECT (SELECT count(*) FROM advisor.catalog_subject_view) || '/' || (SELECT count(*) FROM advisor.catalog_section_view) || '/' || (SELECT count(*) FROM advisor.student_view) || '/' || (SELECT count(*) FROM advisor.student_view WHERE tuition_status = 'ISSUED')")
+[ "$counts" = "14/11/5/1" ] || fail "expected 14 subjects, 11 sections, 5 students, 1 unpaid; found $counts"
 public_tables=$(psql_db -tA -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'")
 [ "$public_tables" = "0" ] || fail "a table lives in public"
 
