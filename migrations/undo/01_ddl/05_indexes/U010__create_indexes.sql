@@ -1,0 +1,10 @@
+DROP INDEX IF EXISTS advisor.ix_idempotency_key_created_at;
+DROP INDEX IF EXISTS advisor.ix_outbox_unpublished;
+DROP INDEX IF EXISTS advisor.ux_catalog_subject_view_code;
+DROP INDEX IF EXISTS advisor.ix_llm_cache_created_at;
+DROP INDEX IF EXISTS advisor.ux_plan_saga;
+DROP INDEX IF EXISTS advisor.ux_plan_confirmation;
+DROP INDEX IF EXISTS advisor.ix_plan_proposed_expires;
+DROP INDEX IF EXISTS advisor.ix_plan_conversation;
+DROP INDEX IF EXISTS advisor.ix_message_conversation_created;
+DROP INDEX IF EXISTS advisor.ix_conversation_user_created;
