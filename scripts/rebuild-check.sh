@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 # The rebuild check of Annex A and 06-data/migration-strategy.md, against a fresh instance:
 # migrate from zero; migrate again applies nothing; every U in reverse leaves no schema and no
-# roles; migrate again; validate; the seeds applied twice keep the same rows.
+# roles; migrate again; validate; the seeds applied twice keep the same rows; an Idempotency-Key
+# is unique per owner, not globally.
 set -eu
 cd "$(dirname "$0")/.."
 export ADVISOR_DB_NAME="${ADVISOR_DB_NAME:-advisor}"
@@ -56,5 +57,15 @@ counts=$(psql_db -tA -c "SELECT (SELECT count(*) FROM advisor.catalog_subject_vi
 [ "$counts" = "14/11/5/1" ] || fail "expected 14 subjects, 11 sections, 5 students, 1 unpaid; found $counts"
 public_tables=$(psql_db -tA -c "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'")
 [ "$public_tables" = "0" ] || fail "a table lives in public"
+
+echo "== 7. an Idempotency-Key is unique per owner, not globally (qone-docs#55)"
+key_row() { echo "INSERT INTO advisor.idempotency_key (owner_id, key, resource_type, resource_id) VALUES ('$1', 'rebuild-check-key', 'conversation', gen_random_uuid());"; }
+OWNER_A=11111111-1111-4111-8111-111111111111
+OWNER_B=11111111-1111-4111-8111-111111111112
+psql_db -c "BEGIN; $(key_row $OWNER_A) $(key_row $OWNER_B) ROLLBACK;" >/dev/null \
+  || fail "two owners could not use the same key"
+if psql_db -c "BEGIN; $(key_row $OWNER_A) $(key_row $OWNER_A) ROLLBACK;" >/dev/null 2>&1; then
+  fail "one owner used the same key twice"
+fi
 
 echo "OK: qone-advisor-db rebuilds from zero, applies nothing twice, undoes completely, rebuilds, validates and seeds idempotently"
