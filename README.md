@@ -25,7 +25,7 @@ Specification: `06-data/models.md` (schema `advisor`), `06-data/modeling-convent
 | `plan` | the enrollments the agent proposes and the student confirms | status list; **a confirmation id exactly when confirmed** (INV-ADV-003, INV-ENR-005); one plan per confirmation and per saga |
 | `llm_cache` | provider answers by SHA-256 of model and prompt | key shape; pruned after 7 days by `qone-worker` |
 | `catalog_subject_view`, `catalog_section_view`, `student_view` | projections fed by catalog, enrollment and billing events (D-11); the subject view is the pensum of the degree audit | rebuilt from events, never edited by hand |
-| `idempotency_key`, `outbox`, `inbox` | the shared shapes of 06-data | `PlanProposed`, `PlanConfirmed`, `PlanDismissed` |
+| `idempotency_key`, `outbox`, `inbox` | the shared shapes of 06-data; a key belongs to its owner with the SHA-256 of its request (V014, `code-corhuila/qone-docs#55`) | key unique **per owner** `(owner_id, key)`, hash shape; `PlanProposed`, `PlanConfirmed`, `PlanDismissed` |
 
 `user_id`, `student_id` and `section_id` are ids of other domains and are not foreign keys.
 
@@ -38,6 +38,19 @@ docker compose --env-file .env -f deploy/compose.yml up -d advisor-db
 docker compose --env-file .env -f deploy/compose.yml --profile tooling run --rm advisor-db-migrate
 sh scripts/rebuild-check.sh     # the Annex A check db-ci runs on every pull request
 ```
+
+## Seed identities
+
+The seeds name only synthetic people (`code-corhuila/qone-docs#55`): the professor names of the section projection is
+`Estudiante Demo 01`..`05` or `Profesor Demo 01`..`03`, with the same ids as the identity seed
+(`qone-identity-db`, e-mails on the reserved `.test` TLD). No real name, e-mail or credential is
+versioned: `scripts/check-seed-identities.sh` (db-ci, and step 0 of the rebuild check) fails on an
+e-mail outside `.test` or a password-hash literal in any migration, and step 6 of the rebuild check
+fails on a seeded name that is not synthetic.
+
+The renaming edited V013 in place, a decided exception to "a merged version is immutable": its
+Flyway checksum changed, so a machine that already applied it runs `sh scripts/down.sh --volumes`
+once in `qone-infra` (every environment is local) and brings the platform up again.
 
 ## Branching
 
