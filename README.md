@@ -25,7 +25,7 @@ Specification: `06-data/models.md` (schema `advisor`), `06-data/modeling-convent
 | `plan` | the enrollments the agent proposes and the student confirms | status list; **a confirmation id exactly when confirmed** (INV-ADV-003, INV-ENR-005); one plan per confirmation and per saga |
 | `llm_cache` | provider answers by SHA-256 of model and prompt | key shape; pruned after 7 days by `qone-worker` |
 | `catalog_subject_view`, `catalog_section_view`, `student_view` | projections fed by catalog, enrollment and billing events (D-11); the subject view is the pensum of the degree audit | rebuilt from events, never edited by hand |
-| `idempotency_key`, `outbox`, `inbox` | the shared shapes of 06-data | `PlanProposed`, `PlanConfirmed`, `PlanDismissed` |
+| `idempotency_key`, `outbox`, `inbox` | the shared shapes of 06-data; a key belongs to its owner with the SHA-256 of its request (V014, `code-corhuila/qone-docs#55`) | key unique **per owner** `(owner_id, key)`, hash shape; `PlanProposed`, `PlanConfirmed`, `PlanDismissed` |
 
 `user_id`, `student_id` and `section_id` are ids of other domains and are not foreign keys.
 
