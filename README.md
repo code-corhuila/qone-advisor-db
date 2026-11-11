@@ -39,6 +39,19 @@ docker compose --env-file .env -f deploy/compose.yml --profile tooling run --rm 
 sh scripts/rebuild-check.sh     # the Annex A check db-ci runs on every pull request
 ```
 
+## Seed identities
+
+The seeds name only synthetic people (`code-corhuila/qone-docs#55`): the professor names of the section projection is
+`Estudiante Demo 01`..`05` or `Profesor Demo 01`..`03`, with the same ids as the identity seed
+(`qone-identity-db`, e-mails on the reserved `.test` TLD). No real name, e-mail or credential is
+versioned: `scripts/check-seed-identities.sh` (db-ci, and step 0 of the rebuild check) fails on an
+e-mail outside `.test` or a password-hash literal in any migration, and step 6 of the rebuild check
+fails on a seeded name that is not synthetic.
+
+The renaming edited V013 in place, a decided exception to "a merged version is immutable": its
+Flyway checksum changed, so a machine that already applied it runs `sh scripts/down.sh --volumes`
+once in `qone-infra` (every environment is local) and brings the platform up again.
+
 ## Branching
 
 Three permanent branches. **None of them accepts a direct commit** — you enter through a child

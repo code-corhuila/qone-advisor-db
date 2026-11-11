@@ -1,6 +1,6 @@
 -- The projections as the event stream of the demo leaves them (same ids as the catalog,
 -- enrollment and billing seeds): the pensum, the sections of 2026-B and, per student, the subjects passed,
--- the confirmed sections with their schedule and the tuition state (Santiago ISSUED). In a running
+-- the confirmed sections with their schedule and the tuition state (Estudiante Demo 02 ISSUED). In a running
 -- platform the consumer keeps these rows; the seed starts them consistent. Upsert.
 INSERT INTO advisor.catalog_subject_view (subject_id, code, name, credits, semester, prerequisites, updated_at)
 VALUES
@@ -23,17 +23,17 @@ ON CONFLICT (subject_id) DO UPDATE SET code = EXCLUDED.code, name = EXCLUDED.nam
 
 INSERT INTO advisor.catalog_section_view (section_id, subject_code, subject_name, term, group_number, professor_name, slots, seats_available, updated_at)
 VALUES
-    ('55555555-5555-4555-8555-555555555501', 'ISW-601', 'Bases de Datos II', '2026-B', 1, 'Ana Torres', '[{"day":"TUE","start":"08:00","end":"10:00"},{"day":"THU","start":"08:00","end":"10:00"}]', 29, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555502', 'ISW-603', 'Ingeniería de Requisitos', '2026-B', 1, 'Jorge Medina', '[{"day":"MON","start":"10:00","end":"12:00"},{"day":"WED","start":"10:00","end":"12:00"}]', 29, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555503', 'ISW-605', 'Arquitectura de Software', '2026-B', 1, 'Ana Torres', '[{"day":"TUE","start":"14:00","end":"16:00"},{"day":"THU","start":"14:00","end":"16:00"}]', 29, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555504', 'MAT-501', 'Estadística II', '2026-B', 1, 'Jorge Medina', '[{"day":"FRI","start":"14:00","end":"17:00"}]', 29, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555505', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 1, 'Carlos Ramírez', '[{"day":"MON","start":"08:00","end":"10:00"},{"day":"WED","start":"08:00","end":"10:00"}]', 27, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555506', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 2, 'Ana Torres', '[{"day":"TUE","start":"08:00","end":"10:00"},{"day":"THU","start":"08:00","end":"10:00"}]', 30, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555507', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 3, 'Jorge Medina', '[{"day":"FRI","start":"08:00","end":"12:00"}]', 0, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555508', 'ISW-501', 'Bases de Datos I', '2026-B', 2, 'Carlos Ramírez', '[{"day":"TUE","start":"10:00","end":"12:00"},{"day":"THU","start":"10:00","end":"12:00"}]', 0, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555509', 'RED-501', 'Redes de Datos', '2026-B', 1, 'Carlos Ramírez', '[{"day":"FRI","start":"08:00","end":"11:00"}]', 30, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555510', 'ISW-602', 'Teoría de la Computación', '2026-B', 1, 'Ana Torres', '[{"day":"TUE","start":"16:00","end":"18:00"},{"day":"THU","start":"16:00","end":"18:00"}]', 30, '2026-08-01T12:00:00Z'),
-    ('55555555-5555-4555-8555-555555555511', 'ISW-703', 'Gestión de Proyectos', '2026-B', 1, 'Jorge Medina', '[{"day":"WED","start":"16:00","end":"19:00"}]', 30, '2026-08-01T12:00:00Z')
+    ('55555555-5555-4555-8555-555555555501', 'ISW-601', 'Bases de Datos II', '2026-B', 1, 'Profesor Demo 02', '[{"day":"TUE","start":"08:00","end":"10:00"},{"day":"THU","start":"08:00","end":"10:00"}]', 29, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555502', 'ISW-603', 'Ingeniería de Requisitos', '2026-B', 1, 'Profesor Demo 03', '[{"day":"MON","start":"10:00","end":"12:00"},{"day":"WED","start":"10:00","end":"12:00"}]', 29, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555503', 'ISW-605', 'Arquitectura de Software', '2026-B', 1, 'Profesor Demo 02', '[{"day":"TUE","start":"14:00","end":"16:00"},{"day":"THU","start":"14:00","end":"16:00"}]', 29, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555504', 'MAT-501', 'Estadística II', '2026-B', 1, 'Profesor Demo 03', '[{"day":"FRI","start":"14:00","end":"17:00"}]', 29, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555505', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 1, 'Profesor Demo 01', '[{"day":"MON","start":"08:00","end":"10:00"},{"day":"WED","start":"08:00","end":"10:00"}]', 27, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555506', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 2, 'Profesor Demo 02', '[{"day":"TUE","start":"08:00","end":"10:00"},{"day":"THU","start":"08:00","end":"10:00"}]', 30, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555507', 'ISW-604', 'Sistemas Distribuidos', '2026-B', 3, 'Profesor Demo 03', '[{"day":"FRI","start":"08:00","end":"12:00"}]', 0, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555508', 'ISW-501', 'Bases de Datos I', '2026-B', 2, 'Profesor Demo 01', '[{"day":"TUE","start":"10:00","end":"12:00"},{"day":"THU","start":"10:00","end":"12:00"}]', 0, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555509', 'RED-501', 'Redes de Datos', '2026-B', 1, 'Profesor Demo 01', '[{"day":"FRI","start":"08:00","end":"11:00"}]', 30, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555510', 'ISW-602', 'Teoría de la Computación', '2026-B', 1, 'Profesor Demo 02', '[{"day":"TUE","start":"16:00","end":"18:00"},{"day":"THU","start":"16:00","end":"18:00"}]', 30, '2026-08-01T12:00:00Z'),
+    ('55555555-5555-4555-8555-555555555511', 'ISW-703', 'Gestión de Proyectos', '2026-B', 1, 'Profesor Demo 03', '[{"day":"WED","start":"16:00","end":"19:00"}]', 30, '2026-08-01T12:00:00Z')
 ON CONFLICT (section_id) DO UPDATE SET subject_code = EXCLUDED.subject_code, subject_name = EXCLUDED.subject_name, term = EXCLUDED.term,
     group_number = EXCLUDED.group_number, professor_name = EXCLUDED.professor_name, slots = EXCLUDED.slots,
     seats_available = EXCLUDED.seats_available, updated_at = EXCLUDED.updated_at;
